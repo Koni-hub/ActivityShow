@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From File to Database - School Enrollment Records</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+	    background: #00D4FF;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #bfdbfe;
+            font-size: 1rem;
+        }
+
+        .content {
+            padding: 2rem;
+            min-height: 500px;
+        }
+
+        .slide-title {
+            font-size: 1.75rem;
+            font-weight: bold;
+            text-align: center;
+            color: #1f2937;
+            border-bottom: 4px solid #3b82f6;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Slide specific styles */
+        .intro-text {
+            font-size: 1.125rem;
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+
+        .alert-box {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .alert-box .title {
+            font-weight: 600;
+            color: #991b1b;
+        }
+
+        .alert-box .text {
+            color: #b91c1c;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .card {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .card ul {
+            list-style: disc;
+            list-style-position: inside;
+            color: #374151;
+        }
+
+        .card ul li {
+            margin: 0.25rem 0;
+        }
+
+        .blue-card {
+            background: #eff6ff;
+        }
+
+        .blue-card h3 {
+            color: #1e40af;
+        }
+
+        .purple-card {
+            background: #faf5ff;
+        }
+
+        .purple-card h3 {
+            color: #6b21a8;
+        }
+
+        .issue-card {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .issue-card h3 {
+            color: #991b1b;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .issue-card p {
+            color: #374151;
+        }
+
+        .solution-card {
+            background: #dcfce7;
+            border-left: 4px solid #22c55e;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .solution-card h3 {
+            color: #166534;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .solution-card p {
+            color: #374151;
+        }
+
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .user-card {
+            background: #faf5ff;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-card h4 {
+            color: #6b21a8;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .user-card p {
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        .model-card {
+            border: 2px solid;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .model-card.indigo {
+            background: #eef2ff;
+            border-color: #818cf8;
+        }
+
+        .model-card.teal {
+            background: #f0fdfa;
+            border-color: #5eead4;
+        }
+
+        .model-card h3 {
+            font-weight: bold;
+            font-size: 1.125rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .model-card.indigo h3 {
+            color: #312e81;
+        }
+
+        .model-card.teal h3 {
+            color: #134e4a;
+        }
+
+        .model-card p {
+            color: #374151;
+            margin-bottom: 0.75rem;
+        }
+
+        .code-box {
+            background: #1f2937;
+            color: #10b981;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+        }
+
+        .code-keyword {
+            color: #60a5fa;
+        }
+
+        .code-type {
+            color: #fbbf24;
+        }
+
+        .guide-question {
+            border: 2px solid;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .guide-question.orange {
+            background: #fff7ed;
+            border-color: #fb923c;
+        }
+
+        .guide-question.yellow {
+            background: #fefce8;
+            border-color: #facc15;
+        }
+
+        .guide-question.blue {
+            background: #eff6ff;
+            border-color: #60a5fa;
+        }
+
+        .guide-question.green {
+            background: #f0fdf4;
+            border-color: #4ade80;
+        }
+
+        .guide-question h3 {
+            font-weight: bold;
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .guide-question.orange h3 {
+            color: #9a3412;
+        }
+
+        .guide-question.yellow h3 {
+            color: #854d0e;
+        }
+
+        .guide-question.blue h3 {
+            color: #1e3a8a;
+        }
+
+        .guide-question.green h3 {
+            color: #166534;
+        }
+
+        .guide-question p {
+            color: #374151;
+        }
+
+        .summary-title {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #111827;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-box {
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            border: 4px solid;
+        }
+
+        .summary-box.problem {
+            background: #fecaca;
+            border-color: #fca5a5;
+        }
+
+        .summary-box.solution {
+            background: #bbf7d0;
+            border-color: #86efac;
+        }
+
+        .summary-box.benefits {
+            background: #a5f3fc;
+            border-color: #67e8f9;
+        }
+
+        .summary-box h4 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .summary-box.problem h4 {
+            color: #7f1d1d;
+        }
+
+        .summary-box.solution h4 {
+            color: #14532d;
+        }
+
+        .summary-box.benefits h4 {
+            color: #164e63;
+        }
+
+        .summary-box p {
+            color: #1f2937;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .banner {
+            background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .banner p {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+
+        .navigation {
+            background: #f3f4f6;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 50%;
+            background: #d1d5db;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot:hover {
+            background: #9ca3af;
+        }
+
+        .dot.active {
+            background: #3b82f6;
+            width: 2rem;
+            border-radius: 0.5rem;
+        }
+
+        .slide-counter {
+            background: #f9fafb;
+            padding: 0.75rem;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .footer-info {
+            margin-top: 1.5rem;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .footer-info p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .footer-info p:first-child {
+            font-weight: 600;
+        }
+
+        .footer-info p:last-child {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        strong {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-icon"></div>
+            <h1>From File to Database</h1>
+            <p>School Enrollment Records Analysis</p>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Slide 1: Scenario -->
+            <div class="slide" id="slide-1">
+                <h2 class="slide-title">Scenario: School Enrollment Records</h2>
+                <p class="intro-text">
+                    A school currently manages student enrollment using paper files and separate Excel spreadsheets 
+                    scattered across different departments.
+                </p>
+                <div class="alert-box">
+                    <p class="title">Current Challenges:</p>
+                    <p class="text">Multiple copies, manual updates, inconsistent information, time-consuming searches</p>
+                </div>
+            </div>
+
+            <!-- Slide 2: Data Items -->
+            <div class="slide hidden" id="slide-2">
+                <h2 class="slide-title">A. Data Items (5+ items)</h2>
+                <div class="grid-2">
+                    <div class="card blue-card">
+                        <h3>Student Information</h3>
+                        <ul>
+                            <li>Student ID Number</li>
+                            <li>First Name</li>
+                            <li>Last Name</li>
+                            <li>Date of Birth</li>
+                            <li>Gender</li>
+                        </ul>
+                    </div>
+                    <div class="card purple-card">
+                        <h3>Academic & Contact</h3>
+                        <ul>
+                            <li>Grade Level</li>
+                            <li>Enrollment Date</li>
+                            <li>Home Address</li>
+                            <li>Parent/Guardian Name</li>
+                            <li>Contact Phone Number</li>
+                            <li>Emergency Contact</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3: File-Based Issues -->
+            <div class="slide hidden" id="slide-3">
+                <h2 class="slide-title">B. Current File-Based Issues (3+ problems)</h2>
+                <div class="issue-card">
+                    <h3>1. Data Redundancy</h3>
+                    <p>The same student information is stored in multiple files (enrollment form, attendance sheet, grade records, medical records). This wastes storage space and creates unnecessary duplication.</p>
+                </div>
+                <div class="issue-card">
+                    <h3>2. Data Inconsistency</h3>
+                    <p>When a student's phone number or address changes, it must be updated in every file. Often some files get updated while others don't, leading to conflicting information about the same student.</p>
+                </div>
+                <div class="issue-card">
+                    <h3>3. Difficulty in Searching & Reporting</h3>
+                    <p>Finding specific student information requires manually searching through multiple files. Generating reports like "total enrollment by grade" is time-consuming and error-prone.</p>
+                </div>
+                <div class="issue-card">
+                    <h3>4. Lack of Data Security</h3>
+                    <p>Paper files or shared spreadsheets don't have proper access controls. Unauthorized staff or even students might access sensitive information.</p>
+                </div>
+            </div>
+
+            <!-- Slide 4: Database Solution -->
+            <div class="slide hidden" id="slide-4">
+                <h2 class="slide-title">C. Database Solution - How DBMS Solves Problems</h2>
+                <div class="solution-card">
+                    <h3>✓ Eliminates Redundancy</h3>
+                    <p>Student information is stored once in a central Students table. All other records reference this single source through relationships.</p>
+                </div>
+                <div class="solution-card">
+                    <h3>✓ Ensures Data Consistency</h3>
+                    <p>Updates made once are automatically reflected everywhere. Change a phone number in the Students table, and all reports and forms show the updated number.</p>
+                </div>
+                <div class="solution-card">
+                    <h3>✓ Enforces Data Integrity</h3>
+                    <p>Database constraints prevent invalid data entry (e.g., duplicate Student IDs, missing required fields, invalid date formats).</p>
+                </div>
+                <div class="solution-card">
+                    <h3>✓ Provides Security & Access Control</h3>
+                    <p>Role-based permissions ensure only authorized staff can view or modify sensitive student information. Audit trails track who accessed what data.</p>
+                </div>
+                <div class="solution-card">
+                    <h3>✓ Enables Efficient Querying</h3>
+                    <p>Generate reports instantly with SQL queries. Search for students, track enrollment trends, and analyze data in seconds instead of hours.</p>
+                </div>
+            </div>
+
+            <!-- Slide 5: Database Users -->
+            <div class="slide hidden" id="slide-5">
+                <h2 class="slide-title">D. Database Components - Users</h2>
+                <h3 style="font-size: 1.25rem; font-weight: bold; color: #6b21a8; margin-bottom: 1rem;">Possible Database Users:</h3>
+                <div class="user-grid">
+                    <div class="user-card">
+                        <h4>School Registrar</h4>
+                        <p>Manages enrollment, updates student records, generates official documents</p>
+                    </div>
+                    <div class="user-card">
+                        <h4>Teachers</h4>
+                        <p>Views class rosters, checks student information, inputs grades</p>
+                    </div>
+                    <div class="user-card">
+                        <h4>School Administrator/Principal</h4>
+                        <p>Access to all records, generates reports, oversees data management</p>
+                    </div>
+                    <div class="user-card">
+                        <h4>School Nurse</h4>
+                        <p>Accesses medical records, emergency contacts, health information</p>
+                    </div>
+                    <div class="user-card">
+                        <h4>Guidance Counselor</h4>
+                        <p>Reviews student academic history, contact information for meetings</p>
+                    </div>
+                    <div class="user-card">
+                        <h4>Database Administrator (DBA)</h4>
+                        <p>Maintains database, manages security, performs backups</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 6: Data Models -->
+            <div class="slide hidden" id="slide-6">
+                <h2 class="slide-title">D. Database Components - Data Models</h2>
+                <div class="model-card indigo">
+                    <h3>Conceptual Model (High-Level)</h3>
+                    <p>Shows entities and their relationships without technical details:</p>
+                    <div style="background: white; padding: 1rem; border-radius: 0.5rem;">
+                        <p style="color: #374151; margin-bottom: 0.5rem;"><strong>Entities:</strong> Student, Guardian, Enrollment, Grade, Course, Teacher</p>
+                        <p style="color: #374151; margin-bottom: 0.5rem;"><strong>Relationships:</strong></p>
+                        <ul style="margin-left: 1.5rem; color: #374151;">
+                            <li>A Student has one or more Guardians</li>
+                            <li>A Student is enrolled in multiple Courses</li>
+                            <li>A Course is taught by one Teacher</li>
+                            <li>A Student receives Grades for each Course</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="model-card teal">
+                    <h3>Logical Model (Detailed Structure)</h3>
+                    <p>Defines tables, columns, data types, and keys:</p>
+                    <div class="code-box">
+                        <div style="margin-bottom: 1rem;">
+                            <strong style="color: #14b8a6;">Students Table:</strong><br>
+                            <span style="margin-left: 1rem;">Student_ID (Primary Key, INT)</span><br>
+                            <span style="margin-left: 1rem;">First_Name (VARCHAR)</span><br>
+                            <span style="margin-left: 1rem;">Last_Name (VARCHAR)</span><br>
+                            <span style="margin-left: 1rem;">Date_of_Birth (DATE)</span><br>
+                            <span style="margin-left: 1rem;">Grade_Level (INT)</span><br>
+                            <span style="margin-left: 1rem;">Address (VARCHAR)</span>
+                        </div>
+                        <div>
+                            <strong style="color: #14b8a6;">Guardians Table:</strong><br>
+                            <span style="margin-left: 1rem;">Guardian_ID (Primary Key)</span><br>
+                            <span style="margin-left: 1rem;">Student_ID (Foreign Key)</span><br>
+                            <span style="margin-left: 1rem;">Name, Phone, Email</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 7: Database Languages -->
+            <div class="slide hidden" id="slide-7">
+                <h2 class="slide-title">D. Database Components - Database Languages</h2>
+                <div class="model-card indigo" style="border-color: #22d3ee;">
+                    <h3>DDL - Data Definition Language</h3>
+                    <p>Used to <strong>create and modify database structure</strong>:</p>
+                    <div class="code-box">
+                        <div style="margin-bottom: 1rem;">
+                            <span class="code-keyword">CREATE TABLE</span> Students (<br>
+                            &nbsp;&nbsp;Student_ID <span class="code-type">INT PRIMARY KEY</span>,<br>
+                            &nbsp;&nbsp;First_Name <span class="code-type">VARCHAR(50)</span>,<br>
+                            &nbsp;&nbsp;Last_Name <span class="code-type">VARCHAR(50)</span>,<br>
+                            &nbsp;&nbsp;Grade_Level <span class="code-type">INT</span><br>
+                            );
+                        </div>
+                        <div>
+                            <span class="code-keyword">ALTER TABLE</span> Students<br>
+                            <span class="code-keyword">ADD</span> Email <span class="code-type">VARCHAR(100)</span>;
+                        </div>
+                    </div>
+                </div>
+                <div class="model-card teal" style="border-color: #4ade80;">
+                    <h3>DML - Data Manipulation Language</h3>
+                    <p>Used to <strong>manage and query data</strong>:</p>
+                    <div class="code-box">
+                        <div style="margin-bottom: 1rem;">
+                            <span class="code-keyword">INSERT INTO</span> Students<br>
+                            <span class="code-keyword">VALUES</span> (101, 'Juan', 'Dela Cruz', 10);
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <span class="code-keyword">SELECT</span> * <span class="code-keyword">FROM</span> Students<br>
+                            <span class="code-keyword">WHERE</span> Grade_Level = 10;
+                        </div>
+                        <div>
+                            <span class="code-keyword">UPDATE</span> Students<br>
+                            <span class="code-keyword">SET</span> Grade_Level = 11<br>
+                            <span class="code-keyword">WHERE</span> Student_ID = 101;
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 8: Guide Questions -->
+            <div class="slide hidden" id="slide-8">
+                <h2 class="slide-title">Guide Questions & Answers</h2>
+                <div class="guide-question orange">
+                    <h3>Question 1: What data are repeatedly stored in files?</h3>
+                    <p><strong>Answer:</strong> Student names, IDs, contact information, addresses, and grade levels are duplicated across enrollment forms, attendance records, grade sheets, and medical files.</p>
+                </div>
+                <div class="guide-question yellow">
+                    <h3>Question 2: What problems may occur when data is updated?</h3>
+                    <p><strong>Answer:</strong> Insertion, update, and deletion anomalies occur, along with increased human error from manual updates across multiple files.</p>
+                </div>
+                <div class="guide-question blue">
+                    <h3>Question 3: How does a DBMS improve data sharing and integrity?</h3>
+                    <p><strong>Answer:</strong> DBMS enables concurrent access, real-time updates, centralized data storage, validation rules, referential integrity, and complete transactions.</p>
+                </div>
+                <div class="guide-question green">
+                    <h3>Question 4: Who is responsible for managing the database?</h3>
+                    <p><strong>Answer:</strong> Database Administrator (DBA) manages system structure and security, Data Stewards ensure data quality, and End Users enter and maintain data.</p>
+                </div>
+            </div>
+
+            <!-- Slide 9: Summary -->
+            <div class="slide hidden" id="slide-9">
+                <h2 class="summary-title">SUMMARY & CONCLUSION</h2>
+                <div class="summary-grid">
+                    <div class="summary-box problem">
+                        <h4>THE PROBLEM</h4>
+                        <p>File-based systems lead to redundancy, inconsistency, inefficiency, and security issues in managing school enrollment records.</p>
+                    </div>
+                    <div class="summary-box solution">
+                        <h4>THE SOLUTION</h4>
+                        <p>A Database Management System provides centralized data storage, ensures consistency, enforces integrity, enables efficient access, and improves security.</p>
+                    </div>
+                    <div class="summary-box benefits">
+                        <h4>THE BENEFITS</h4>
+                        <p>Better data quality, faster operations, improved decision-making, enhanced collaboration, and reduced administrative burden.</p>
+                    </div>
+                </div>
+                <div class="banner">
+                    <p>FROM FILE TO DATABASE = FROM CHAOS TO CONTROL</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-btn" id="prev-btn" onclick="prevSlide()">← Previous</button>
+            <div class="dots" id="dots-container"></div>
+            <button class="nav-btn" id="next-btn" onclick="nextSlide()">Next →</button>
+        </div>
+
+        <!-- Slide Counter -->
+        <div class="slide-counter" id="slide-counter">Slide 1 of 9</div>
+    </div>
+
+    <!-- Footer Info -->
+    <div class="footer-info">
+        <p><strong>Time Allocation:</strong> 30 minutes collaboration + 2 minutes presentation</p>
+        <p>Use navigation buttons or click the dots to move between slides</p>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 9;
+
+        function initDots() {
+            const dotsContainer = document.getElementById('dots-container');
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot' + (i === 1 ? ' active' : '');
+                dot.onclick = () => goToSlide(i);
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function updateSlide() {
+            // Hide all slides
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.add('hidden');
+            });
+
+            // Show current slide
+            document.getElementById(`slide-${currentSlide}`).classList.remove('hidden');
+
+            // Update dots
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index + 1 === currentSlide);
+            });
+
+            // Update buttons
+            document.getElementById('prev-btn').disabled = currentSlide === 1;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides;
+
+            // Update counter
+            document.getElementById('slide-counter').textContent = `Slide ${currentSlide} of ${totalSlides}`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(slideNumber) {
+            currentSlide = slideNumber;
+            updateSlide();
+        }
+
+        // Initialize
+        initDots();
+        updateSlide();
+    </script>
+</body>
+</html>
